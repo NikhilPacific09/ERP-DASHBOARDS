@@ -56,6 +56,13 @@ export default function Home() {
   Dashboard 7 — Packaging
 </a>
 
+<a
+  href="/dashboard-8-dispatch"
+  className="rounded-lg bg-emerald-600 p-6 text-center text-white shadow hover:bg-emerald-700"
+>
+  Dashboard 8 — Dispatch
+</a>
+
         </div>
       </div>
     </main>
