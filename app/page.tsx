@@ -63,6 +63,13 @@ export default function Home() {
   Dashboard 8 — Dispatch
 </a>
 
+<a
+  href="/dashboard-9-residuals"
+  className="rounded-lg bg-teal-600 p-6 text-center text-white shadow hover:bg-teal-700"
+>
+  Dashboard 9 — Residuals
+</a>
+
         </div>
       </div>
     </main>
