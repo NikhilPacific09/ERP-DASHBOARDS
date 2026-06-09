@@ -41,6 +41,14 @@ export default function Home() {
           >
             Dashboard 5 — Sink Cutting
           </a>
+
+          <a
+  href="/dashboard-6-fabrication"
+  className="rounded-lg bg-cyan-600 p-6 text-center text-white shadow hover:bg-cyan-700"
+>
+  Dashboard 6 — Fabrication
+</a>
+
         </div>
       </div>
     </main>
