@@ -49,6 +49,13 @@ export default function Home() {
   Dashboard 6 — Fabrication
 </a>
 
+<a
+  href="/dashboard-7-packaging"
+  className="rounded-lg bg-indigo-600 p-6 text-center text-white shadow hover:bg-indigo-700"
+>
+  Dashboard 7 — Packaging
+</a>
+
         </div>
       </div>
     </main>
