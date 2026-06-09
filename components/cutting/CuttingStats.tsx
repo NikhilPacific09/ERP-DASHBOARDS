@@ -1,13 +1,13 @@
 type CuttingStatsProps = {
   pendingPieces: number;
-  completedToday: number;
-  myRecords: number;
+  completedPieces: number;
+  totalPieces: number;
 };
 
 export default function CuttingStats({
   pendingPieces,
-  completedToday,
-  myRecords,
+  completedPieces,
+  totalPieces,
 }: CuttingStatsProps) {
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -23,21 +23,21 @@ export default function CuttingStats({
 
       <div className="rounded-lg border-l-4 border-green-500 bg-white p-5 shadow">
         <p className="text-gray-500">
-          Completed Today
+          Completed Pieces
         </p>
 
         <h2 className="mt-2 text-3xl font-bold">
-          {completedToday}
+          {completedPieces}
         </h2>
       </div>
 
       <div className="rounded-lg border-l-4 border-blue-500 bg-white p-5 shadow">
         <p className="text-gray-500">
-          My Records
+          Total Pieces
         </p>
 
         <h2 className="mt-2 text-3xl font-bold">
-          {myRecords}
+          {totalPieces}
         </h2>
       </div>
     </div>

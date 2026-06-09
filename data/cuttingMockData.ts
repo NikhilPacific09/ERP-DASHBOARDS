@@ -1,24 +1,48 @@
-import { CuttingRecord } from "@/types/cutting";
+import { CuttingPiece } from "@/types/cutting";
 
-export const cuttingRecords: CuttingRecord[] = [
+export const cuttingPieces: CuttingPiece[] = [
   {
     pieceId: "P001",
     project: "Kitchen Top",
     length: 120,
     width: 60,
     shapeType: "Rectangle",
-    status: "Completed",
-    startTime: "09:00",
-    endTime: "09:20",
+    status: "Pending",
   },
+
   {
     pieceId: "P002",
     project: "Counter Top",
     length: 150,
     width: 70,
     shapeType: "L Shape",
-    status: "In Progress",
-    startTime: "10:00",
-    endTime: "-",
+    status: "Pending",
+  },
+
+  {
+    pieceId: "P003",
+    project: "Island Top",
+    length: 180,
+    width: 80,
+    shapeType: "Rectangle",
+    status: "Pending",
+  },
+
+  {
+    pieceId: "P004",
+    project: "Wash Basin",
+    length: 90,
+    width: 50,
+    shapeType: "Curve",
+    status: "Pending",
+  },
+
+  {
+    pieceId: "P005",
+    project: "Vanity Top",
+    length: 110,
+    width: 55,
+    shapeType: "Round",
+    status: "Pending",
   },
 ];

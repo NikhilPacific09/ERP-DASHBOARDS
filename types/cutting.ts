@@ -1,18 +1,37 @@
-export interface CuttingRecord {
+export interface CuttingPiece {
   pieceId: string;
   project: string;
+
   length: number;
   width: number;
+
   shapeType: string;
+
   status: string;
-  startTime: string;
-  endTime: string;
 }
 
-export type NewCuttingRecord = {
+export interface ProcessCuttingPayload {
   pieceId: string;
+
+  shapeType:
+    | "Rectangle"
+    | "L Shape"
+    | "Curve"
+    | "Round"
+    | "Custom";
+
   length: number;
   width: number;
-  shapeType: string;
+
+  longLength: number;
+  longWidth: number;
+
+  hasSink: boolean;
+  hasPipeCut: boolean;
+  hasRadius: boolean;
+  hasCurve: boolean;
+
+  reverseLayout: boolean;
+
   remarks: string;
-};
+}

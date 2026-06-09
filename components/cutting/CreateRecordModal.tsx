@@ -1,133 +1,126 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-type CreateRecordModalProps = {
+import {
+  CuttingPiece,
+  ProcessCuttingPayload,
+} from "@/types/cutting";
+
+type ProcessModalProps = {
   isOpen: boolean;
   onClose: () => void;
 
-  onSave: (record: {
-    pieceId: string;
-    length: number;
-    width: number;
-    shapeType: string;
-    remarks: string;
-  }) => void;
+  piece: CuttingPiece | null;
 
-  record?: {
-    pieceId: string;
-    length: number;
-    width: number;
-    shapeType: string;
-  } | null;
+  onSaveDraft: (
+    payload: ProcessCuttingPayload
+  ) => void;
 
-  isEditMode?: boolean;
+  onCompleteCutting: (
+    payload: ProcessCuttingPayload
+  ) => void;
 };
 
 export default function CreateRecordModal({
   isOpen,
   onClose,
-  onSave,
-  record,
-  isEditMode = false,
-}: CreateRecordModalProps) {
-  const [pieceId, setPieceId] = useState("");
-  const [length, setLength] = useState("");
-  const [width, setWidth] = useState("");
+  piece,
+  onSaveDraft,
+  onCompleteCutting,
+}: ProcessModalProps) {
   const [shapeType, setShapeType] =
-    useState("Rectangle");
-  const [remarks, setRemarks] = useState("");
+    useState(
+      piece?.shapeType ?? "Rectangle"
+    );
 
-  useEffect(() => {
-    if (record && isEditMode) {
-      setPieceId(record.pieceId);
-      setLength(String(record.length));
-      setWidth(String(record.width));
-      setShapeType(record.shapeType);
-    }
-  }, [record, isEditMode]);
+  const [length, setLength] =
+    useState(
+      piece
+        ? String(piece.length)
+        : ""
+    );
 
-  if (!isOpen) return null;
+  const [width, setWidth] =
+    useState(
+      piece
+        ? String(piece.width)
+        : ""
+    );
 
-  const handleSave = () => {
-    if (
-      !pieceId.trim() ||
-      !length ||
-      !width
-    ) {
-      alert("Please fill all required fields");
-      return;
-    }
+  const [longLength, setLongLength] =
+    useState("");
 
-    onSave({
-      pieceId,
+  const [longWidth, setLongWidth] =
+    useState("");
+
+  const [hasSink, setHasSink] =
+    useState(false);
+
+  const [hasPipeCut, setHasPipeCut] =
+    useState(false);
+
+  const [hasRadius, setHasRadius] =
+    useState(false);
+
+  const [hasCurve, setHasCurve] =
+    useState(false);
+
+  const [reverseLayout, setReverseLayout] =
+    useState(false);
+
+  const [remarks, setRemarks] =
+    useState("");
+
+  if (!isOpen || !piece) return null;
+
+  const buildPayload =
+    (): ProcessCuttingPayload => ({
+      pieceId: piece.pieceId,
+
+      shapeType:
+        shapeType as ProcessCuttingPayload["shapeType"],
+
       length: Number(length),
+
       width: Number(width),
-      shapeType,
+
+      longLength:
+        Number(longLength) || 0,
+
+      longWidth:
+        Number(longWidth) || 0,
+
+      hasSink,
+
+      hasPipeCut,
+
+      hasRadius,
+
+      hasCurve,
+
+      reverseLayout,
+
       remarks,
     });
 
-    setPieceId("");
-    setLength("");
-    setWidth("");
-    setShapeType("Rectangle");
-    setRemarks("");
-
-    onClose();
-  };
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white p-6 shadow-lg">
         <h2 className="mb-6 text-2xl font-bold">
-          {isEditMode
-            ? "Edit Record"
-            : "Create Record"}
+          Process Piece
         </h2>
 
         <div className="space-y-4">
           <div>
             <label className="mb-1 block font-medium">
-              Piece ID
+              Piece Code
             </label>
 
             <input
-              type="text"
-              value={pieceId}
-              onChange={(e) =>
-                setPieceId(e.target.value)
-              }
-              className="w-full rounded border p-2"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block font-medium">
-              Length
-            </label>
-
-            <input
-              type="number"
-              value={length}
-              onChange={(e) =>
-                setLength(e.target.value)
-              }
-              className="w-full rounded border p-2"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block font-medium">
-              Width
-            </label>
-
-            <input
-              type="number"
-              value={width}
-              onChange={(e) =>
-                setWidth(e.target.value)
-              }
-              className="w-full rounded border p-2"
+              value={piece.pieceId}
+              readOnly
+              className="w-full rounded border bg-slate-100 p-2"
             />
           </div>
 
@@ -139,47 +132,171 @@ export default function CreateRecordModal({
             <select
               value={shapeType}
               onChange={(e) =>
-                setShapeType(e.target.value)
+                setShapeType(
+                  e.target.value
+                )
               }
               className="w-full rounded border p-2"
             >
-              <option>Rectangle</option>
-              <option>L Shape</option>
-              <option>Custom</option>
+              <option>
+                Rectangle
+              </option>
+
+              <option>
+                L Shape
+              </option>
+
+              <option>
+                Curve
+              </option>
+
+              <option>
+                Round
+              </option>
+
+              <option>
+                Custom
+              </option>
             </select>
           </div>
 
-          <div>
-            <h3 className="mb-2 font-semibold">
-              Special Features
-            </h3>
-
-            <div className="grid grid-cols-2 gap-2">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Has Sink
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block font-medium">
+                Length
               </label>
 
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Has Pipe Cut
-              </label>
-
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Has Radius
-              </label>
-
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Has Curve
-              </label>
-
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Reverse Layout
-              </label>
+              <input
+                type="number"
+                value={length}
+                onChange={(e) =>
+                  setLength(
+                    e.target.value
+                  )
+                }
+                className="w-full rounded border p-2"
+              />
             </div>
+
+            <div>
+              <label className="mb-1 block font-medium">
+                Width
+              </label>
+
+              <input
+                type="number"
+                value={width}
+                onChange={(e) =>
+                  setWidth(
+                    e.target.value
+                  )
+                }
+                className="w-full rounded border p-2"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block font-medium">
+                Long Length
+              </label>
+
+              <input
+                type="number"
+                value={longLength}
+                onChange={(e) =>
+                  setLongLength(
+                    e.target.value
+                  )
+                }
+                className="w-full rounded border p-2"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block font-medium">
+                Long Width
+              </label>
+
+              <input
+                type="number"
+                value={longWidth}
+                onChange={(e) =>
+                  setLongWidth(
+                    e.target.value
+                  )
+                }
+                className="w-full rounded border p-2"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={hasSink}
+                onChange={(e) =>
+                  setHasSink(
+                    e.target.checked
+                  )
+                }
+              />
+              Has Sink
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={hasPipeCut}
+                onChange={(e) =>
+                  setHasPipeCut(
+                    e.target.checked
+                  )
+                }
+              />
+              Has Pipe Cut
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={hasRadius}
+                onChange={(e) =>
+                  setHasRadius(
+                    e.target.checked
+                  )
+                }
+              />
+              Has Radius
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={hasCurve}
+                onChange={(e) =>
+                  setHasCurve(
+                    e.target.checked
+                  )
+                }
+              />
+              Has Curve
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={reverseLayout}
+                onChange={(e) =>
+                  setReverseLayout(
+                    e.target.checked
+                  )
+                }
+              />
+              Reverse Layout
+            </label>
           </div>
 
           <div>
@@ -191,29 +308,44 @@ export default function CreateRecordModal({
               rows={4}
               value={remarks}
               onChange={(e) =>
-                setRemarks(e.target.value)
+                setRemarks(
+                  e.target.value
+                )
               }
               className="w-full rounded border p-2"
             />
           </div>
+        </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              onClick={handleSave}
-              className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-            >
-              {isEditMode
-                ? "Update"
-                : "Save"}
-            </button>
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            onClick={() =>
+              onSaveDraft(
+                buildPayload()
+              )
+            }
+            className="rounded bg-yellow-500 px-4 py-2 text-white"
+          >
+            Save Draft
+          </button>
 
-            <button
-              onClick={onClose}
-              className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-            >
-              Cancel
-            </button>
-          </div>
+          <button
+            onClick={() =>
+              onCompleteCutting(
+                buildPayload()
+              )
+            }
+            className="rounded bg-green-600 px-4 py-2 text-white"
+          >
+            Complete Cutting
+          </button>
+
+          <button
+            onClick={onClose}
+            className="rounded bg-red-600 px-4 py-2 text-white"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

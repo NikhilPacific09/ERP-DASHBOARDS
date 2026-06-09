@@ -4,108 +4,154 @@ import { useState } from "react";
 
 import CuttingHeader from "@/components/cutting/CuttingHeader";
 import CuttingStats from "@/components/cutting/CuttingStats";
-import NewRecordButton from "@/components/cutting/NewRecordButton";
-import CreateRecordModal from "@/components/cutting/CreateRecordModal";
 import CuttingTable from "@/components/cutting/CuttingTable";
-import ViewRecordModal from "@/components/cutting/ViewRecordModal";
+import CreateRecordModal from "@/components/cutting/CreateRecordModal";
 
-import { cuttingRecords } from "@/data/cuttingMockData";
-import { CuttingRecord } from "@/types/cutting";
+import { cuttingPieces } from "@/data/cuttingMockData";
 
-export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+import {
+  CuttingPiece,
+  ProcessCuttingPayload,
+} from "@/types/cutting";
 
-  const [records, setRecords] =
-    useState<CuttingRecord[]>(cuttingRecords);
+export default function CuttingDashboardPage() {
+  const [pieces, setPieces] =
+    useState<CuttingPiece[]>(
+      cuttingPieces
+    );
 
-  const [selectedRecord, setSelectedRecord] =
-    useState<CuttingRecord | null>(null);
-
-  const [isViewModalOpen, setIsViewModalOpen] =
+  const [isModalOpen, setIsModalOpen] =
     useState(false);
 
-  const [editingRecord, setEditingRecord] =
-    useState<CuttingRecord | null>(null);
+  const [selectedPiece, setSelectedPiece] =
+    useState<CuttingPiece | null>(
+      null
+    );
 
-  const [isEditMode, setIsEditMode] =
-    useState(false);
+  const pendingPieces =
+    pieces.filter(
+      (piece) =>
+        piece.status !==
+        "Completed"
+    ).length;
 
-  // Dynamic Stats
-  const pendingPieces = records.filter(
-    (record) => record.status === "In Progress"
-  ).length;
+  const completedPieces =
+    pieces.filter(
+      (piece) =>
+        piece.status ===
+        "Completed"
+    ).length;
 
-  const completedToday = records.filter(
-    (record) => record.status === "Completed"
-  ).length;
+  const totalPieces =
+    pieces.length;
 
-  const myRecords = records.length;
-
-  // Add Record
-  const handleAddRecord = (newRecord: {
-    pieceId: string;
-    length: number;
-    width: number;
-    shapeType: string;
-    remarks: string;
-  }) => {
-    const record: CuttingRecord = {
-      pieceId: newRecord.pieceId,
-      project: "New Project",
-      length: newRecord.length,
-      width: newRecord.width,
-      shapeType: newRecord.shapeType,
-      status: "In Progress",
-      startTime: "Now",
-      endTime: "-",
-    };
-
-    setRecords((prev) => [record, ...prev]);
-  };
-
-  // View Record
-  const handleViewRecord = (
-    record: CuttingRecord
+  const handleProcess = (
+    piece: CuttingPiece
   ) => {
-    setSelectedRecord(record);
-    setIsViewModalOpen(true);
-  };
-
-  // Edit Record
-  const handleEditRecord = (
-    record: CuttingRecord
-  ) => {
-    setEditingRecord(record);
-    setIsEditMode(true);
+    setSelectedPiece(piece);
     setIsModalOpen(true);
   };
 
-  // Update Record
-  const handleUpdateRecord = (
-    updatedRecord: {
-      pieceId: string;
-      length: number;
-      width: number;
-      shapeType: string;
-      remarks: string;
-    }
+  const handleSaveDraft = (
+    payload: ProcessCuttingPayload
   ) => {
-    setRecords((prev) =>
-      prev.map((record) =>
-        record.pieceId === editingRecord?.pieceId
+    console.log(
+      "UPDATE PIECE",
+      payload
+    );
+
+    alert(
+      "Draft saved successfully"
+    );
+
+    setIsModalOpen(false);
+  };
+
+  const handleCompleteCutting = (
+    payload: ProcessCuttingPayload
+  ) => {
+    const updatePiecePayload = {
+      length: payload.length,
+
+      width: payload.width,
+
+      shapeType:
+        payload.shapeType,
+
+      longLength:
+        payload.longLength,
+
+      longWidth:
+        payload.longWidth,
+
+      hasSink:
+        payload.hasSink,
+
+      hasPipeCut:
+        payload.hasPipeCut,
+
+      hasRadius:
+        payload.hasRadius,
+
+      hasCurve:
+        payload.hasCurve,
+
+      reverseLayout:
+        payload.reverseLayout,
+
+      remarks:
+        payload.remarks,
+    };
+
+    const completeOperationPayload =
+      {
+        pieceId:
+          payload.pieceId,
+
+        operationType:
+          "CUTTING",
+      };
+
+    console.log(
+      "UPDATE PIECE",
+      updatePiecePayload
+    );
+
+    console.log(
+      "COMPLETE OPERATION",
+      completeOperationPayload
+    );
+
+    setPieces((prev) =>
+      prev.map((piece) =>
+        piece.pieceId ===
+        payload.pieceId
           ? {
-              ...record,
-              pieceId: updatedRecord.pieceId,
-              length: updatedRecord.length,
-              width: updatedRecord.width,
-              shapeType: updatedRecord.shapeType,
+              ...piece,
+
+              length:
+                payload.length,
+
+              width:
+                payload.width,
+
+              shapeType:
+                payload.shapeType,
+
+              status:
+                "Completed",
             }
-          : record
+          : piece
       )
     );
 
-    setEditingRecord(null);
-    setIsEditMode(false);
+    alert(
+      "Cutting completed successfully"
+    );
+
+    setIsModalOpen(false);
+
+    setSelectedPiece(null);
   };
 
   return (
@@ -117,45 +163,37 @@ export default function Home() {
       <CuttingHeader />
 
       <CuttingStats
-        pendingPieces={pendingPieces}
-        completedToday={completedToday}
-        myRecords={myRecords}
-      />
-
-      <NewRecordButton
-        onClick={() => {
-          setEditingRecord(null);
-          setIsEditMode(false);
-          setIsModalOpen(true);
-        }}
+        pendingPieces={
+          pendingPieces
+        }
+        completedPieces={
+          completedPieces
+        }
+        totalPieces={
+          totalPieces
+        }
       />
 
       <CuttingTable
-        records={records}
-        onView={handleViewRecord}
-        onEdit={handleEditRecord}
+        pieces={pieces}
+        onProcess={
+          handleProcess
+        }
       />
 
       <CreateRecordModal
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
-          setEditingRecord(null);
-          setIsEditMode(false);
+          setSelectedPiece(null);
         }}
-        onSave={
-          isEditMode
-            ? handleUpdateRecord
-            : handleAddRecord
+        piece={selectedPiece}
+        onSaveDraft={
+          handleSaveDraft
         }
-        record={editingRecord}
-        isEditMode={isEditMode}
-      />
-
-      <ViewRecordModal
-        isOpen={isViewModalOpen}
-        onClose={() => setIsViewModalOpen(false)}
-        record={selectedRecord}
+        onCompleteCutting={
+          handleCompleteCutting
+        }
       />
     </main>
   );
