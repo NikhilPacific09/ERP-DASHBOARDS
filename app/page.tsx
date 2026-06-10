@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-100 p-8">
@@ -121,12 +122,12 @@ export default function Home() {
                   </td>
 
                   <td className="border p-3">
-                    <a
-                      href="/projects/1"
-                      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                    >
-                      View Project
-                    </a>
+                    <Link
+  href="/projects/1"
+  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+>
+  View Project
+</Link>
                   </td>
                 </tr>
               </tbody>
