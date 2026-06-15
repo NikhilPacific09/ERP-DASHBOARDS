@@ -76,6 +76,14 @@ export default function Home() {
             >
               Dashboard 9 — Residuals
             </a>
+
+            <a
+  href="/dashboard-10-sampling"
+  className="rounded-lg bg-blue-700 p-6 text-center text-white shadow hover:bg-blue-800"
+>
+  Dashboard 10 — Sampling Coordinator
+</a>
+
           </div>
         </div>
 
