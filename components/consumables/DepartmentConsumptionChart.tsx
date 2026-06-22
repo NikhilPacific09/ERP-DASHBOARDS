@@ -16,7 +16,7 @@ const departmentData = [
     consumption: 320,
   },
   {
-    department: "Distributor",
+    department: "Dist.",
     consumption: 220,
   },
   {
@@ -24,11 +24,11 @@ const departmentData = [
     consumption: 80,
   },
   {
-    department: "LB Line",
+    department: "LB",
     consumption: 120,
   },
   {
-    department: "Raw Material",
+    department: "Raw Mat.",
     consumption: 150,
   },
   {
@@ -46,10 +46,22 @@ export default function DepartmentConsumptionChart() {
 
       <div className="h-87.5">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={departmentData}>
+          <BarChart
+            data={departmentData}
+            margin={{
+              top: 10,
+              right: 10,
+              left: 10,
+              bottom: 20,
+            }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
 
-            <XAxis dataKey="department" />
+            <XAxis
+              dataKey="department"
+              interval={0}
+              tick={{ fontSize: 11 }}
+            />
 
             <YAxis />
 
